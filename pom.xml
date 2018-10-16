@@ -1,9 +1,9 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lapismc</groupId>
-    <artifactId>WikipediaLinkRank</artifactId>
+    <artifactId>WikipediaLinkGraph</artifactId>
     <version>1.0.0</version>
-    <name>WikipediaLinkRank</name>
+    <name>WikipediaLinkGraph</name>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -55,9 +55,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
+            <groupId>org.gephi</groupId>
+            <artifactId>gephi-toolkit</artifactId>
+            <version>0.9.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

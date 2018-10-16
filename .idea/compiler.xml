@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="WikipediaLinkRank" />
+        <module name="WikipediaLinkGraph" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="WikipediaLinkRank" target="1.8" />
+      <module name="WikipediaLinkGraph" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
