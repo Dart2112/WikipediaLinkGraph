@@ -25,6 +25,7 @@ class LinkGraph {
     private ArrayList<Connection> connections = new ArrayList<>();
     private List<String> urls = new ArrayList<>();
     private HashMap<String, String> titleCache = new HashMap<>();
+    private HashMap<String, Document> documentCache = new HashMap<>();
 
     LinkGraph() {
         //create a list of the urls to index
@@ -108,25 +109,22 @@ class LinkGraph {
                 continue;
             }
             System.out.println("Getting interconnections for " + titleCache.get(url) + "\n");
-            try {
-                //Use Jsoup to load the URLs document
-                Document doc = Jsoup.connect(url).get();
-                //Find all the links in the page
-                Elements links = doc.select("a[href]");
-                //Loop through all these links
-                for (Element link : links) {
-                    //get the url of the link
-                    String linkURL = link.attr("abs:href");
-                    //if its to a site we have indexed
-                    if (titleCache.containsKey(linkURL) && !url.equals(linkURL)) {
-                        //get the page titles and add a connection/increase the weight
-                        String a = titleCache.get(url);
-                        String b = titleCache.get(linkURL);
-                        processConnection(a, b);
-                    }
+            //Use Jsoup to load the URLs document
+            Document doc = getDocument(url);
+            assert doc != null;
+            //Find all the links in the page
+            Elements links = doc.select("a[href]");
+            //Loop through all these links
+            for (Element link : links) {
+                //get the url of the link
+                String linkURL = link.attr("abs:href");
+                //if its to a site we have indexed
+                if (titleCache.containsKey(linkURL) && !url.equals(linkURL)) {
+                    //get the page titles and add a connection/increase the weight
+                    String a = titleCache.get(url);
+                    String b = titleCache.get(linkURL);
+                    processConnection(a, b);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -137,56 +135,79 @@ class LinkGraph {
      * @param url The URL to index
      */
     private void addLinksForUrl(String url) {
-        try {
-            //Use Jsoup to load the URLs document
-            Document doc = Jsoup.connect(url).get();
-            String targetTitle = doc.title().replace(" - Wikipedia", "");
-            System.out.println("Getting connections for " + targetTitle);
-            //Find all the links in the page
-            Elements links = doc.select("a[href]");
-            //Loop through all these links
-            for (Element link : links) {
-                //get the url of the link
-                String linkURL = link.attr("abs:href");
-                //ignore pages that aren't on wikipedia, this is to limit the number of sites we have to load to get the title
-                if (!linkURL.contains("en.wikipedia.org/wiki") || linkURL.startsWith(url)) {
+        //Use Jsoup to load the URLs document
+        Document doc = getDocument(url);
+        assert doc != null;
+        String targetTitle = doc.title().replace(" - Wikipedia", "");
+        System.out.println("Getting connections for " + targetTitle);
+        //Find all the links in the page
+        Elements links = doc.select("a[href]");
+        //Loop through all these links
+        for (Element link : links) {
+            //get the url of the link
+            String linkURL = link.attr("abs:href");
+            //ignore pages that aren't on wikipedia, this is to limit the number of sites we have to load to get the title
+            if (!linkURL.contains("en.wikipedia.org/wiki") || linkURL.startsWith(url)) {
+                continue;
+            }
+            String title;
+            if (titleCache.containsKey(linkURL)) {
+                title = titleCache.get(linkURL);
+            } else {
+                //get the title of the link by loading the target page
+                title = Objects.requireNonNull(getDocument(linkURL)).title();
+                //ensure its a wikipedia article by ignoring the link if it doesn't
+                //end with " - Wikipedia" or is in fact a category or file
+                if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
+                        || title.startsWith("Template:") || title.startsWith("Template talk:")
+                        || title.startsWith("Wikipedia:") || title.startsWith("Portal:") || title.startsWith("Talk:")
+                        || title.startsWith("User talk:") || title.startsWith("Help:") || title.startsWith("User contributions")
+                        || title.startsWith("Pages that link to") || title.contains("Recent changes")
+                        || title.contains("Related changes") || title.contains("Special pages")
+                        || title.contains("Book sources") || title.contains("Digital object identifier") || title.contains("CITES")) {
                     continue;
                 }
-                String title;
-                if (titleCache.containsKey(linkURL)) {
-                    title = titleCache.get(linkURL);
-                } else {
-                    //get the title of the link by loading the target page
-                    title = Jsoup.connect(linkURL).get().title();
-                    //ensure its a wikipedia article by ignoring the link if it doesn't
-                    //end with " - Wikipedia" or is in fact a category or file
-                    if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
-                            || title.startsWith("Template:") || title.startsWith("Template talk:")
-                            || title.startsWith("Wikipedia:") || title.startsWith("Portal:") || title.startsWith("Talk:")
-                            || title.startsWith("User talk:") || title.startsWith("Help:") || title.startsWith("User contributions")
-                            || title.startsWith("Pages that link to") || title.contains("Recent changes")
-                            || title.contains("Related changes") || title.contains("Special pages")
-                            || title.contains("Book sources") || title.contains("Digital object identifier") || title.contains("CITES")) {
-                        continue;
-                    }
-                    //remove the " - Wikipedia" from the end of the title as its no longer required
-                    title = title.replace(" - Wikipedia", "");
-                    titleCache.put(linkURL, title);
-                }
-                //If the link is already in the list just add to the integer, otherwise add it to the list with a value of 1
-                processConnection(targetTitle, title);
+                //remove the " - Wikipedia" from the end of the title as its no longer required
+                title = title.replace(" - Wikipedia", "");
+                titleCache.put(linkURL, title);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            //If the link is already in the list just add to the integer, otherwise add it to the list with a value of 1
+            processConnection(targetTitle, title);
         }
     }
 
+    /**
+     * Processes a connection between 2 nodes
+     *
+     * @param a a node
+     * @param b another node
+     */
     private void processConnection(String a, String b) {
         System.out.println(a + " > " + b);
         if (isConnectionStored(a, b)) {
             Objects.requireNonNull(getConnection(a, b)).increaseWeight();
         } else {
             connections.add(new Connection(a, b));
+        }
+    }
+
+    /**
+     * Gets the document for the url
+     *
+     * @param url the URL you wish to retrieve
+     * @return Returns the document for the provided URL
+     */
+    private Document getDocument(String url) {
+        if (documentCache.containsKey(url)) {
+            return documentCache.get(url);
+        }
+        try {
+            Document doc = Jsoup.connect(url).get();
+            documentCache.put(url, doc);
+            return doc;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
