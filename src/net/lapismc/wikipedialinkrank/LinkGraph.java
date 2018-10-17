@@ -6,7 +6,6 @@ import org.gephi.io.importer.impl.ImportContainerImpl;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,7 +24,7 @@ class LinkGraph {
     private ArrayList<Connection> connections = new ArrayList<>();
     private List<String> urls = new ArrayList<>();
     private HashMap<String, String> titleCache = new HashMap<>();
-    private HashMap<String, Document> documentCache = new HashMap<>();
+    private HashMap<String, Article> cache = new HashMap<>();
 
     LinkGraph() {
         //create a list of the urls to index
@@ -65,11 +64,11 @@ class LinkGraph {
         urls.add("https://en.wikipedia.org/wiki/Bitcoin");
         urls.add("https://en.wikipedia.org/wiki/Google");
 
-        collectData(0, 5, "Currency");
-        collectData(5, 10, "TVShows");
+        //collectData(0, 5, "Currency");
+        //collectData(5, 10, "TVShows");
         collectData(10, 15, "Singers");
-        collectData(15, 20, "Boxers");
-        collectData(20, 25, "Random");
+        //collectData(15, 20, "Boxers");
+        //collectData(20, 25, "Random");
     }
 
     /**
@@ -81,37 +80,40 @@ class LinkGraph {
      */
     private void collectData(int start, int limit, String title) {
         System.out.println("Collecting data for " + title);
-        int i = limit;
+        int i = -1;
+        int remaining = limit;
         for (String url : urls) {
+            i++;
             //stop loading pages if we have reached the limit
-            if (i <= 0)
+            if (remaining <= 0)
                 break;
             if (i < start) {
                 continue;
             }
             //loop through the URLs and add the links from them to the list
             addLinksForUrl(url);
-            i--;
+            remaining--;
         }
         addInterconnections();
         saveConnectionsAsGraph(title);
         //clear the lists to stop duplication
         connections.clear();
-        titleCache.clear();
+        cache.clear();
     }
 
     /**
      * Adds connections between non main nodes
      */
     private void addInterconnections() {
-        for (String url : titleCache.keySet()) {
+        for (String url : cache.keySet()) {
             if (urls.contains(url)) {
                 continue;
             }
-            System.out.println("Getting interconnections for " + titleCache.get(url) + "\n");
+            System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
             //Use Jsoup to load the URLs document
-            Document doc = getDocument(url);
-            assert doc != null;
+            Document doc = cache.get(url).getDocument();
+            if (doc == null)
+                continue;
             //Find all the links in the page
             Elements links = doc.select("a[href]");
             //Loop through all these links
@@ -137,7 +139,10 @@ class LinkGraph {
     private void addLinksForUrl(String url) {
         //Use Jsoup to load the URLs document
         Document doc = getDocument(url);
-        assert doc != null;
+        if (doc == null) {
+            System.out.println("Failed to load " + url);
+            System.exit(0);
+        }
         String targetTitle = doc.title().replace(" - Wikipedia", "");
         System.out.println("Getting connections for " + targetTitle);
         //Find all the links in the page
@@ -150,27 +155,21 @@ class LinkGraph {
             if (!linkURL.contains("en.wikipedia.org/wiki") || linkURL.startsWith(url)) {
                 continue;
             }
-            String title;
-            if (titleCache.containsKey(linkURL)) {
-                title = titleCache.get(linkURL);
-            } else {
-                //get the title of the link by loading the target page
-                title = Objects.requireNonNull(getDocument(linkURL)).title();
-                //ensure its a wikipedia article by ignoring the link if it doesn't
-                //end with " - Wikipedia" or is in fact a category or file
-                if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
-                        || title.startsWith("Template:") || title.startsWith("Template talk:")
-                        || title.startsWith("Wikipedia:") || title.startsWith("Portal:") || title.startsWith("Talk:")
-                        || title.startsWith("User talk:") || title.startsWith("Help:") || title.startsWith("User contributions")
-                        || title.startsWith("Pages that link to") || title.contains("Recent changes")
-                        || title.contains("Related changes") || title.contains("Special pages")
-                        || title.contains("Book sources") || title.contains("Digital object identifier") || title.contains("CITES")) {
-                    continue;
-                }
-                //remove the " - Wikipedia" from the end of the title as its no longer required
-                title = title.replace(" - Wikipedia", "");
-                titleCache.put(linkURL, title);
+            String title = getTitle(linkURL);
+            //ensure its a wikipedia article by ignoring the link if it doesn't
+            //end with " - Wikipedia" or is in fact a category or file
+            if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
+                    || title.startsWith("Template:") || title.startsWith("Template talk:")
+                    || title.startsWith("Wikipedia:") || title.startsWith("Portal:") || title.startsWith("Talk:")
+                    || title.startsWith("User talk:") || title.startsWith("Help:") || title.startsWith("User contributions")
+                    || title.startsWith("Pages that link to") || title.contains("Recent changes")
+                    || title.contains("Related changes") || title.contains("Special pages")
+                    || title.contains("Book sources") || title.contains("Digital object identifier") || title.contains("CITES")) {
+                continue;
             }
+            //remove the " - Wikipedia" from the end of the title as its no longer required
+            title = title.replace(" - Wikipedia", "");
+            titleCache.put(linkURL, title);
             //If the link is already in the list just add to the integer, otherwise add it to the list with a value of 1
             processConnection(targetTitle, title);
         }
@@ -198,17 +197,23 @@ class LinkGraph {
      * @return Returns the document for the provided URL
      */
     private Document getDocument(String url) {
-        if (documentCache.containsKey(url)) {
-            return documentCache.get(url);
+        if (cache.containsKey(url)) {
+            return cache.get(url).getDocument();
         }
-        try {
-            Document doc = Jsoup.connect(url).get();
-            documentCache.put(url, doc);
-            return doc;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        Article article = new Article(url);
+        cache.put(url, article);
+        return article.getDocument();
+    }
+
+    private String getTitle(String url) {
+        if (cache.containsKey(url)) {
+            return cache.get(url).getTitle();
         }
+        Document doc = getDocument(url);
+        if (doc == null) {
+            return "Error";
+        }
+        return doc.title();
     }
 
     /**
