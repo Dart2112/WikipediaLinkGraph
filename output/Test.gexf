@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3" xmlns:viz="http://www.gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd">
+  <meta lastmodifieddate="2018-10-19">
+    <creator>Gephi 0.9</creator>
+    <description></description>
+  </meta>
+  <graph defaultedgetype="directed" mode="static">
+    <nodes>
+      <node id="WavePad Audio Editor" label="WavePad Audio Editor">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="344.7947" y="388.89078"></viz:position>
+      </node>
+      <node id="NCH Software" label="NCH Software">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-454.96387" y="74.86387"></viz:position>
+      </node>
+      <node id="Microsoft Windows" label="Microsoft Windows">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="359.55862" y="309.37167"></viz:position>
+      </node>
+      <node id="macOS" label="macOS">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-428.97134" y="310.01706"></viz:position>
+      </node>
+      <node id="Android (operating system)" label="Android (operating system)">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-446.8476" y="-15.601765"></viz:position>
+      </node>
+      <node id="iOS" label="iOS">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="471.80435" y="326.53708"></viz:position>
+      </node>
+      <node id="Shareware" label="Shareware">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-422.3534" y="354.77542"></viz:position>
+      </node>
+      <node id="Khemarat District" label="Khemarat District">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-20.97172" y="214.93126"></viz:position>
+      </node>
+      <node id="Ubon Ratchathani Province" label="Ubon Ratchathani Province">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-199.3332" y="110.48899"></viz:position>
+      </node>
+      <node id="Amphoe" label="Amphoe">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-141.85097" y="112.42649"></viz:position>
+      </node>
+      <node id="Na Tan District" label="Na Tan District">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-467.2764" y="-537.6644"></viz:position>
+      </node>
+      <node id="Pho Sai District" label="Pho Sai District">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-259.62418" y="359.2795"></viz:position>
+      </node>
+      <node id="Kut Khaopun District" label="Kut Khaopun District">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="32.11214" y="136.99242"></viz:position>
+      </node>
+      <node id="Mekong" label="Mekong">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="420.1675" y="245.30223"></viz:position>
+      </node>
+      <node id="Programmer" label="Programmer">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="432.06552" y="177.95396"></viz:position>
+      </node>
+      <node id="C++" label="C++">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-211.20259" y="-103.68545"></viz:position>
+      </node>
+      <node id="Operating system" label="Operating system">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-424.33447" y="-79.104"></viz:position>
+      </node>
+      <node id="MPEG-4 Part 14" label="MPEG-4 Part 14">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-381.49973" y="-35.503254"></viz:position>
+      </node>
+      <node id="Batch processing" label="Batch processing">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="241.08626" y="204.41252"></viz:position>
+      </node>
+      <node id="Software release life cycle" label="Software release life cycle">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-388.09363" y="307.11826"></viz:position>
+      </node>
+      <node id="Google Chrome" label="Google Chrome">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="393.06406" y="-524.3006"></viz:position>
+      </node>
+      <node id="CNET" label="CNET">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="487.91043" y="-235.11806"></viz:position>
+      </node>
+      <node id="Echo" label="Echo">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-93.93995" y="-44.354023"></viz:position>
+      </node>
+      <node id="Reverberation" label="Reverberation">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="387.8198" y="-515.87445"></viz:position>
+      </node>
+      <node id="Monaural" label="Monaural">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-329.60028" y="-561.0742"></viz:position>
+      </node>
+      <node id="Stereophonic sound" label="Stereophonic sound">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-445.42932" y="-33.614887"></viz:position>
+      </node>
+      <node id="Ask.com" label="Ask.com">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="114.74612" y="-377.93863"></viz:position>
+      </node>
+      <node id="Browser toolbar" label="Browser toolbar">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="62.99825" y="174.32817"></viz:position>
+      </node>
+      <node id="Advanced Audio Coding" label="Advanced Audio Coding">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-43.41795" y="76.07102"></viz:position>
+      </node>
+      <node id="MP3" label="MP3">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="360.58878" y="-425.17404"></viz:position>
+      </node>
+      <node id="WAV" label="WAV">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="426.94778" y="110.187294"></viz:position>
+      </node>
+      <node id="FLAC" label="FLAC">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-484.15945" y="-42.060017"></viz:position>
+      </node>
+      <node id="Ogg" label="Ogg">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="306.5012" y="-190.72798"></viz:position>
+      </node>
+      <node id="Audio Interchange File Format" label="Audio Interchange File Format">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="365.3033" y="234.85564"></viz:position>
+      </node>
+      <node id="M3U" label="M3U">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-142.9633" y="-530.06805"></viz:position>
+      </node>
+      <node id="Comparison of digital audio editors" label="Comparison of digital audio editors">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="200.56288" y="188.30528"></viz:position>
+      </node>
+      <node id="Software license" label="Software license">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="135.92122" y="-491.0242"></viz:position>
+      </node>
+      <node id="Virtual Studio Technology" label="Virtual Studio Technology">
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="242.88063" y="325.77902"></viz:position>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="WavePad Audio Editor" target="NCH Software" weight="3.0"></edge>
+      <edge id="1" source="WavePad Audio Editor" target="Microsoft Windows" weight="2.0"></edge>
+      <edge id="2" source="WavePad Audio Editor" target="macOS" weight="2.0"></edge>
+      <edge id="3" source="WavePad Audio Editor" target="Android (operating system)" weight="2.0"></edge>
+      <edge id="4" source="WavePad Audio Editor" target="iOS" weight="2.0"></edge>
+      <edge id="5" source="WavePad Audio Editor" target="Shareware" weight="2.0"></edge>
+      <edge id="6" source="Khemarat District" target="Ubon Ratchathani Province" weight="5.0"></edge>
+      <edge id="7" source="Khemarat District" target="Amphoe" weight="2.0"></edge>
+      <edge id="8" source="Khemarat District" target="Na Tan District" weight="2.0"></edge>
+      <edge id="9" source="Khemarat District" target="Pho Sai District" weight="2.0"></edge>
+      <edge id="10" source="Khemarat District" target="Kut Khaopun District" weight="2.0"></edge>
+      <edge id="11" source="Khemarat District" target="Mekong" weight="2.0"></edge>
+      <edge id="12" source="Programmer" target="C++" weight="3.0"></edge>
+      <edge id="13" source="Programmer" target="Operating system" weight="2.0"></edge>
+      <edge id="14" source="C++" target="MPEG-4 Part 14" weight="4.0"></edge>
+      <edge id="15" source="Operating system" target="Microsoft Windows" weight="4.0"></edge>
+      <edge id="16" source="Operating system" target="macOS" weight="5.0"></edge>
+      <edge id="17" source="Operating system" target="Android (operating system)" weight="4.0"></edge>
+      <edge id="18" source="Operating system" target="iOS" weight="2.0"></edge>
+      <edge id="19" source="Operating system" target="Batch processing" weight="2.0"></edge>
+      <edge id="20" source="Android (operating system)" target="C++" weight="4.0"></edge>
+      <edge id="21" source="Android (operating system)" target="Software release life cycle" weight="2.0"></edge>
+      <edge id="22" source="Android (operating system)" target="Google Chrome" weight="5.0"></edge>
+      <edge id="23" source="Android (operating system)" target="iOS" weight="6.0"></edge>
+      <edge id="24" source="Android (operating system)" target="Microsoft Windows" weight="3.0"></edge>
+      <edge id="25" source="Android (operating system)" target="CNET" weight="10.0"></edge>
+      <edge id="26" source="Echo" target="Reverberation" weight="2.0"></edge>
+      <edge id="27" source="Monaural" target="Stereophonic sound" weight="3.0"></edge>
+      <edge id="28" source="Ask.com" target="Browser toolbar" weight="2.0"></edge>
+      <edge id="29" source="Google Chrome" target="Software release life cycle" weight="2.0"></edge>
+      <edge id="30" source="Google Chrome" target="Operating system" weight="3.0"></edge>
+      <edge id="31" source="Google Chrome" target="Microsoft Windows" weight="2.0"></edge>
+      <edge id="32" source="Google Chrome" target="macOS" weight="6.0"></edge>
+      <edge id="33" source="Google Chrome" target="iOS" weight="4.0"></edge>
+      <edge id="34" source="Google Chrome" target="CNET" weight="9.0"></edge>
+      <edge id="35" source="Advanced Audio Coding" target="MPEG-4 Part 14" weight="8.0"></edge>
+      <edge id="36" source="Advanced Audio Coding" target="MP3" weight="6.0"></edge>
+      <edge id="37" source="Advanced Audio Coding" target="Android (operating system)" weight="3.0"></edge>
+      <edge id="38" source="Advanced Audio Coding" target="Microsoft Windows" weight="5.0"></edge>
+      <edge id="39" source="Advanced Audio Coding" target="WAV" weight="2.0"></edge>
+      <edge id="40" source="Advanced Audio Coding" target="FLAC" weight="2.0"></edge>
+      <edge id="41" source="Advanced Audio Coding" target="Ogg" weight="2.0"></edge>
+      <edge id="42" source="Audio Interchange File Format" target="MP3" weight="2.0"></edge>
+      <edge id="43" source="Audio Interchange File Format" target="FLAC" weight="2.0"></edge>
+      <edge id="44" source="Audio Interchange File Format" target="WAV" weight="2.0"></edge>
+      <edge id="45" source="FLAC" target="Operating system" weight="2.0"></edge>
+      <edge id="46" source="FLAC" target="Ogg" weight="9.0"></edge>
+      <edge id="47" source="FLAC" target="MP3" weight="2.0"></edge>
+      <edge id="48" source="FLAC" target="Microsoft Windows" weight="3.0"></edge>
+      <edge id="49" source="FLAC" target="Android (operating system)" weight="2.0"></edge>
+      <edge id="50" source="FLAC" target="iOS" weight="2.0"></edge>
+      <edge id="51" source="FLAC" target="MPEG-4 Part 14" weight="2.0"></edge>
+      <edge id="52" source="M3U" target="MP3" weight="2.0"></edge>
+      <edge id="53" source="MPEG-4 Part 14" target="MP3" weight="4.0"></edge>
+      <edge id="54" source="MPEG-4 Part 14" target="Ogg" weight="2.0"></edge>
+      <edge id="55" source="Ogg" target="MP3" weight="3.0"></edge>
+      <edge id="56" source="Ogg" target="Microsoft Windows" weight="4.0"></edge>
+      <edge id="57" source="Ogg" target="WAV" weight="2.0"></edge>
+      <edge id="58" source="Comparison of digital audio editors" target="Software license" weight="4.0"></edge>
+      <edge id="59" source="Comparison of digital audio editors" target="Microsoft Windows" weight="4.0"></edge>
+      <edge id="60" source="Comparison of digital audio editors" target="macOS" weight="4.0"></edge>
+      <edge id="61" source="Comparison of digital audio editors" target="iOS" weight="4.0"></edge>
+      <edge id="62" source="Comparison of digital audio editors" target="Shareware" weight="2.0"></edge>
+      <edge id="63" source="Comparison of digital audio editors" target="Virtual Studio Technology" weight="8.0"></edge>
+      <edge id="64" source="Comparison of digital audio editors" target="WAV" weight="4.0"></edge>
+      <edge id="65" source="Comparison of digital audio editors" target="MP3" weight="4.0"></edge>
+      <edge id="66" source="Comparison of digital audio editors" target="Advanced Audio Coding" weight="4.0"></edge>
+      <edge id="67" source="Comparison of digital audio editors" target="Ogg" weight="4.0"></edge>
+      <edge id="68" source="Comparison of digital audio editors" target="FLAC" weight="4.0"></edge>
+    </edges>
+  </graph>
+</gexf>
