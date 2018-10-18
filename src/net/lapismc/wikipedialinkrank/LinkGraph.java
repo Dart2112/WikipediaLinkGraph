@@ -118,8 +118,13 @@ class LinkGraph {
      * Adds connections between non main nodes
      */
     private void addInterconnections() {
-        for (String url : cache.keySet()) {
-            if (urls.contains(url)) {
+        ArrayList<Connection> list = new ArrayList<>(connections);
+        for (Connection c : list) {
+            String titleA = c.getTitleA();
+            String titleB = c.getTitleB();
+            String title = getUrl(titleA).equals("") ? titleB : titleA;
+            String url = getUrl(title);
+            if (urls.contains(url) || cache.get(url) == null || cache.get(url).getTitle() == null) {
                 continue;
             }
             if (isValidTitle(cache.get(url).getTitle())) {
@@ -148,6 +153,14 @@ class LinkGraph {
                 }
             }
         }
+    }
+
+    private String getUrl(String title) {
+        for (String url : titleCache.keySet()) {
+            if (titleCache.get(url).equals(title))
+                return url;
+        }
+        return "";
     }
 
     /**

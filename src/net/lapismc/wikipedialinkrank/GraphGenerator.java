@@ -25,6 +25,9 @@ public class GraphGenerator implements Generator {
 
     public void generate(ContainerLoader container) {
         for (Connection c : connections) {
+            if (c.getWeight() == 1) {
+                continue;
+            }
             // create nodes if they don't already exist
             NodeDraft a;
             NodeDraft b;
