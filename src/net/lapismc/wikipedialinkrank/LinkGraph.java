@@ -78,7 +78,7 @@ class LinkGraph {
      * Collects the data for the provided range of URLs and saves them in a graph of name title
      *
      * @param start The index to start at, counts from 0
-     * @param size The number of pages to index, counts from 1
+     * @param size  The number of pages to index, counts from 1
      * @param title The title of the graph output
      */
     private void collectData(int start, int size, String title) {
@@ -122,7 +122,11 @@ class LinkGraph {
             if (urls.contains(url)) {
                 continue;
             }
-            System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
+            if (isValidTitle(cache.get(url).getTitle())) {
+                System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
+            } else {
+                continue;
+            }
             //Use Jsoup to load the URLs document
             Document doc = cache.get(url).getDocument();
             if (doc == null) {
@@ -138,8 +142,8 @@ class LinkGraph {
                 //if its to a site we have indexed
                 if (titleCache.containsKey(linkURL) && !url.equals(linkURL)) {
                     //get the page titles and add a connection/increase the weight
-                    String a = getTitle(url).replace(" - Wikipedia", "");
-                    String b = getTitle(linkURL).replace(" - Wikipedia", "");
+                    String a = doc.title().replace(" - Wikipedia", "");
+                    String b = titleCache.get(linkURL);
                     processConnection(a, b);
                 }
             }
@@ -179,13 +183,7 @@ class LinkGraph {
             }
             //ensure its a wikipedia article by ignoring the link if it doesn't
             //end with " - Wikipedia" or is in fact a category or file
-            if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
-                    || title.startsWith("Template:") || title.startsWith("Template talk:")
-                    || title.startsWith("Wikipedia:") || title.startsWith("Portal:") || title.startsWith("Talk:")
-                    || title.startsWith("User talk:") || title.startsWith("Help:") || title.startsWith("User contributions")
-                    || title.startsWith("Pages that link to") || title.contains("Recent changes")
-                    || title.contains("Related changes") || title.contains("Special pages")
-                    || title.contains("Book sources") || title.contains("Digital object identifier") || title.contains("CITES")) {
+            if (!isValidTitle(title)) {
                 continue;
             }
             //remove the " - Wikipedia" from the end of the title as its no longer required
@@ -195,6 +193,16 @@ class LinkGraph {
             processConnection(targetTitle, title);
             cleanCache();
         }
+    }
+
+    private boolean isValidTitle(String title) {
+        return title.endsWith(" - Wikipedia") && !title.startsWith("Category:") && !title.startsWith("File:")
+                && !title.startsWith("Template:") && !title.startsWith("Template talk:")
+                && !title.startsWith("Wikipedia:") && !title.startsWith("Portal:") && !title.startsWith("Talk:")
+                && !title.startsWith("User talk:") && !title.startsWith("Help:") && !title.startsWith("User contributions")
+                && !title.startsWith("Pages that link to") && !title.contains("Recent changes")
+                && !title.contains("Related changes") && !title.contains("Special pages")
+                && !title.contains("Book sources") && !title.contains("Digital object identifier") && !title.contains("CITES");
     }
 
     /**
