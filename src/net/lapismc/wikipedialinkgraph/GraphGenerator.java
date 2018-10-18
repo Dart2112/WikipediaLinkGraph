@@ -1,4 +1,4 @@
-package net.lapismc.wikipedialinkrank;
+package net.lapismc.wikipedialinkgraph;
 
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;

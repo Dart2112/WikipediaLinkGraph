@@ -1,4 +1,4 @@
-package net.lapismc.wikipedialinkrank;
+package net.lapismc.wikipedialinkgraph;
 
 public class Main {
 

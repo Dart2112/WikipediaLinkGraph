@@ -17,7 +17,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>net.lapismc.wikipedialinkrank.Main</mainClass>
+                            <mainClass>net.lapismc.wikipedialinkgraph.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

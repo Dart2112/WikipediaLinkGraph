@@ -1,4 +1,4 @@
-package net.lapismc.wikipedialinkrank;
+package net.lapismc.wikipedialinkgraph;
 
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.importer.api.ImportController;

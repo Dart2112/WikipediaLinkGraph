@@ -1,4 +1,4 @@
-package net.lapismc.wikipedialinkrank;
+package net.lapismc.wikipedialinkgraph;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
