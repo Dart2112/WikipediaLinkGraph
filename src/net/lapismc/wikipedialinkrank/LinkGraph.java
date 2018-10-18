@@ -13,18 +13,16 @@ import org.openide.util.Lookup;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 class LinkGraph {
 
+    HashMap<String, String> titleCache = new HashMap<>();
     //This HashMap will store the titles of links scraped and the number of times that title occurred
-    private ArrayList<Connection> connections = new ArrayList<>();
     private List<String> urls = new ArrayList<>();
-    private HashMap<String, String> titleCache = new HashMap<>();
     private HashMap<String, Article> cache = new HashMap<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<FailedArticle> failedArticles = new ArrayList<>();
 
     LinkGraph() {
         //create a list of the urls to index
@@ -64,24 +62,29 @@ class LinkGraph {
         urls.add("https://en.wikipedia.org/wiki/Bitcoin");
         urls.add("https://en.wikipedia.org/wiki/Google");
 
-        //collectData(0, 5, "Currency");
-        //collectData(5, 10, "TVShows");
-        collectData(10, 15, "Singers");
-        //collectData(15, 20, "Boxers");
-        //collectData(20, 25, "Random");
+        //Test
+        urls.add("https://en.wikipedia.org/wiki/WavePad_Audio_Editor");
+        urls.add("https://en.wikipedia.org/wiki/Khemarat_District");
+
+        collectData(0, 5, "Currency");
+        collectData(5, 5, "TVShows");
+        collectData(10, 5, "Singers");
+        collectData(15, 5, "Boxers");
+        collectData(20, 5, "Random");
+        collectData(25, 2, "Test");
     }
 
     /**
      * Collects the data for the provided range of URLs and saves them in a graph of name title
      *
      * @param start The index to start at, counts from 0
-     * @param limit The number of pages to index, counts from 1
+     * @param size The number of pages to index, counts from 1
      * @param title The title of the graph output
      */
-    private void collectData(int start, int limit, String title) {
+    private void collectData(int start, int size, String title) {
         System.out.println("Collecting data for " + title);
         int i = -1;
-        int remaining = limit;
+        int remaining = size;
         for (String url : urls) {
             i++;
             //stop loading pages if we have reached the limit
@@ -95,10 +98,20 @@ class LinkGraph {
             remaining--;
         }
         addInterconnections();
+        processFailedArticles();
         saveConnectionsAsGraph(title);
-        //clear the lists to stop duplication
+        //clear the list to stop duplication
         connections.clear();
-        cache.clear();
+    }
+
+    /**
+     * Keeps trying to load pages and process their connections until they are all done
+     */
+    private void processFailedArticles() {
+        System.out.println("Processing failed articles");
+        while (!failedArticles.isEmpty())
+            failedArticles.removeIf(article -> article.process(this));
+        System.out.println("Finished processing failed articles");
     }
 
     /**
@@ -112,8 +125,10 @@ class LinkGraph {
             System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
             //Use Jsoup to load the URLs document
             Document doc = cache.get(url).getDocument();
-            if (doc == null)
+            if (doc == null) {
+                failedArticles.add(new FailedArticle(url));
                 continue;
+            }
             //Find all the links in the page
             Elements links = doc.select("a[href]");
             //Loop through all these links
@@ -123,8 +138,8 @@ class LinkGraph {
                 //if its to a site we have indexed
                 if (titleCache.containsKey(linkURL) && !url.equals(linkURL)) {
                     //get the page titles and add a connection/increase the weight
-                    String a = titleCache.get(url);
-                    String b = titleCache.get(linkURL);
+                    String a = getTitle(url).replace(" - Wikipedia", "");
+                    String b = getTitle(linkURL).replace(" - Wikipedia", "");
                     processConnection(a, b);
                 }
             }
@@ -139,9 +154,11 @@ class LinkGraph {
     private void addLinksForUrl(String url) {
         //Use Jsoup to load the URLs document
         Document doc = getDocument(url);
-        if (doc == null) {
-            System.out.println("Failed to load " + url);
-            System.exit(0);
+        while (doc == null) {
+            System.out.println("Failed to load " + url + ", Trying again");
+            cache.remove(url);
+            titleCache.remove(url);
+            doc = getDocument(url);
         }
         String targetTitle = doc.title().replace(" - Wikipedia", "");
         System.out.println("Getting connections for " + targetTitle);
@@ -156,6 +173,10 @@ class LinkGraph {
                 continue;
             }
             String title = getTitle(linkURL);
+            if (title == null || title.equalsIgnoreCase("Error")) {
+                failedArticles.add(new FailedArticle(url, targetTitle));
+                continue;
+            }
             //ensure its a wikipedia article by ignoring the link if it doesn't
             //end with " - Wikipedia" or is in fact a category or file
             if (!title.endsWith(" - Wikipedia") || title.startsWith("Category:") || title.startsWith("File:")
@@ -172,6 +193,25 @@ class LinkGraph {
             titleCache.put(linkURL, title);
             //If the link is already in the list just add to the integer, otherwise add it to the list with a value of 1
             processConnection(targetTitle, title);
+            cleanCache();
+        }
+    }
+
+    /**
+     * Removes items from cache so it doesn't get so big as to slow the program down
+     */
+    private void cleanCache() {
+        if (cache.size() > 100) {
+            ArrayList<String> toRemove = new ArrayList<>();
+            Iterator<String> it = cache.keySet().iterator();
+            int i = 0;
+            while (it.hasNext() && i < 25) {
+                i++;
+                toRemove.add(it.next());
+            }
+            for (String s : toRemove) {
+                cache.remove(s);
+            }
         }
     }
 
@@ -181,7 +221,7 @@ class LinkGraph {
      * @param a a node
      * @param b another node
      */
-    private void processConnection(String a, String b) {
+    void processConnection(String a, String b) {
         System.out.println(a + " > " + b);
         if (isConnectionStored(a, b)) {
             Objects.requireNonNull(getConnection(a, b)).increaseWeight();
@@ -196,18 +236,27 @@ class LinkGraph {
      * @param url the URL you wish to retrieve
      * @return Returns the document for the provided URL
      */
-    private Document getDocument(String url) {
+    Document getDocument(String url) {
         if (cache.containsKey(url)) {
             return cache.get(url).getDocument();
         }
         Article article = new Article(url);
+        if (article.getDocument() == null) {
+            return null;
+        }
         cache.put(url, article);
         return article.getDocument();
     }
 
-    private String getTitle(String url) {
+    String getTitle(String url) {
         if (cache.containsKey(url)) {
-            return cache.get(url).getTitle();
+            Article a = cache.get(url);
+            if (a.getTitle() != null) {
+                return cache.get(url).getTitle();
+            } else {
+                cache.remove(url);
+                return "Error";
+            }
         }
         Document doc = getDocument(url);
         if (doc == null) {

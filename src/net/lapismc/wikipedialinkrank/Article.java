@@ -12,10 +12,9 @@ class Article {
 
     Article(String url) {
         try {
-            Thread.sleep(50);
-            this.doc = Jsoup.connect(url).timeout(5000).get();
+            this.doc = Jsoup.connect(url).get();
             this.title = doc.title();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             System.out.println("Failed to get doc for " + url);
         }
     }
