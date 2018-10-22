@@ -118,20 +118,21 @@ class LinkGraph {
      * Adds connections from non main nodes
      */
     private void addInterconnections() {
-        ArrayList<Connection> list = new ArrayList<>(connections);
-        for (Connection c : list) {
-            String titleA = c.getTitleA();
-            String titleB = c.getTitleB();
-            String title = getUrl(titleA).equals("") ? titleB : titleA;
+        ArrayList<Connection> list = new ArrayList<>();
+        for (Connection c : connections) {
+            list.add(c.clone());
+        }
+        Iterator<Connection> it = list.iterator();
+        while (it.hasNext()) {
+            Connection c = it.next();
+            //because title A is always one of the main articles
+            String title = c.getTitleB();
+            it.remove();
             String url = getUrl(title);
-            if (urls.contains(url) || url.equals("")) {
+            if (url.equals("")) {
                 continue;
             }
-            if (isValidTitle(title)) {
-                System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
-            } else {
-                continue;
-            }
+            System.out.println("Getting interconnections for " + title + "\n");
             //Use Jsoup to load the URLs document
             Document doc = getDocument(url);
             if (doc == null) {

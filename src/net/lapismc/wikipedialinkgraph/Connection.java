@@ -7,9 +7,13 @@ class Connection {
     private Integer weight;
 
     Connection(String a, String b) {
+        this(a, b, 1);
+    }
+
+    private Connection(String a, String b, Integer weight) {
         this.a = a;
         this.b = b;
-        weight = 1;
+        this.weight = weight;
     }
 
     void increaseWeight() {
@@ -30,6 +34,12 @@ class Connection {
 
     boolean isConnecting(String x, String y) {
         return (x.equals(a) && y.equals(b)) || (y.equals(a) && x.equals(b));
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public Connection clone() {
+        return new Connection(a, b, weight);
     }
 
 }
