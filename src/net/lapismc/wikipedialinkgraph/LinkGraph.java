@@ -115,7 +115,7 @@ class LinkGraph {
     }
 
     /**
-     * Adds connections between non main nodes
+     * Adds connections from non main nodes
      */
     private void addInterconnections() {
         ArrayList<Connection> list = new ArrayList<>(connections);
@@ -124,16 +124,16 @@ class LinkGraph {
             String titleB = c.getTitleB();
             String title = getUrl(titleA).equals("") ? titleB : titleA;
             String url = getUrl(title);
-            if (urls.contains(url) || cache.get(url) == null || cache.get(url).getTitle() == null) {
+            if (urls.contains(url) || url.equals("")) {
                 continue;
             }
-            if (isValidTitle(cache.get(url).getTitle())) {
+            if (isValidTitle(title)) {
                 System.out.println("Getting interconnections for " + cache.get(url).getTitle() + "\n");
             } else {
                 continue;
             }
             //Use Jsoup to load the URLs document
-            Document doc = cache.get(url).getDocument();
+            Document doc = getDocument(url);
             if (doc == null) {
                 failedArticles.add(new FailedArticle(url));
                 continue;
