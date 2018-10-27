@@ -17,7 +17,9 @@ import java.util.*;
 
 class LinkGraph {
 
+    private static LinkGraph instance;
     HashMap<String, String> titleCache = new HashMap<>();
+    List<String> currentDataSet = new ArrayList<>();
     //This HashMap will store the titles of links scraped and the number of times that title occurred
     private List<String> urls = new ArrayList<>();
     private HashMap<String, Article> cache = new HashMap<>();
@@ -25,6 +27,7 @@ class LinkGraph {
     private ArrayList<FailedArticle> failedArticles = new ArrayList<>();
 
     LinkGraph() {
+        instance = this;
         //create a list of the urls to index
 
         //Currency
@@ -75,6 +78,15 @@ class LinkGraph {
     }
 
     /**
+     * Get a static instance of this class for accessing methods externally
+     *
+     * @return returns a static instance of the {@link LinkGraph} class
+     */
+    public static LinkGraph getInstance() {
+        return instance;
+    }
+
+    /**
      * Collects the data for the provided range of URLs and saves them in a graph of name title
      *
      * @param start The index to start at, counts from 0
@@ -95,6 +107,7 @@ class LinkGraph {
             }
             //loop through the URLs and add the links from them to the list
             addLinksForUrl(url);
+            currentDataSet.add(url);
             remaining--;
         }
         addInterconnections();
@@ -102,6 +115,7 @@ class LinkGraph {
         saveConnectionsAsGraph(title);
         //clear the list to stop duplication
         connections.clear();
+        currentDataSet.clear();
     }
 
     /**
@@ -146,16 +160,23 @@ class LinkGraph {
                 //get the url of the link
                 String linkURL = link.attr("abs:href");
                 //if its to a site we have indexed
-                if (titleCache.containsKey(linkURL) && !url.equals(linkURL)) {
+                if (!url.equals(linkURL) && currentDataSet.contains(linkURL)) {
                     //get the page titles and add a connection/increase the weight
-                    String a = doc.title().replace(" - Wikipedia", "");
-                    String b = titleCache.get(linkURL);
+                    String a = getTitle(url).replace(" - Wikipedia", "");
+                    String b = getTitle(linkURL).replace(" - Wikipedia", "");
                     processConnection(a, b);
                 }
             }
+            cleanCache();
         }
     }
 
+    /**
+     * Get the url for a title
+     *
+     * @param title The title of the page
+     * @return Returns the URL of the page given from the TitleCache
+     */
     private String getUrl(String title) {
         for (String url : titleCache.keySet()) {
             if (titleCache.get(url).equals(title))
@@ -209,6 +230,12 @@ class LinkGraph {
         }
     }
 
+    /**
+     * Checks if the title matches the format of a Wikipedia Article
+     *
+     * @param title The title to test
+     * @return Returns true if the title is valid
+     */
     private boolean isValidTitle(String title) {
         return title.endsWith(" - Wikipedia") && !title.startsWith("Category:") && !title.startsWith("File:")
                 && !title.startsWith("Template:") && !title.startsWith("Template talk:")
@@ -223,7 +250,7 @@ class LinkGraph {
      * Removes items from cache so it doesn't get so big as to slow the program down
      */
     private void cleanCache() {
-        if (cache.size() > 100) {
+        if (cache.size() > 30) {
             ArrayList<String> toRemove = new ArrayList<>();
             Iterator<String> it = cache.keySet().iterator();
             int i = 0;
@@ -270,6 +297,11 @@ class LinkGraph {
         return article.getDocument();
     }
 
+    /**
+     * Gets the title of a url from JSoup or Cache
+     * @param url The URL to fetch
+     * @return Title of the URL requested
+     */
     String getTitle(String url) {
         if (cache.containsKey(url)) {
             Article a = cache.get(url);

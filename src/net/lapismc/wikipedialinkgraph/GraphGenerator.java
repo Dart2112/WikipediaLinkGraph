@@ -9,6 +9,7 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.lookup.ServiceProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @ServiceProvider(service = Generator.class)
 public class GraphGenerator implements Generator {
@@ -18,6 +19,8 @@ public class GraphGenerator implements Generator {
     @SuppressWarnings("WeakerAccess")
     protected boolean cancel = false;
     private ArrayList<Connection> connections;
+    private HashMap<String, Integer> mainCounts = new HashMap<>();
+    private Integer totalCount = 0;
 
     void setConnections(ArrayList<Connection> connections) {
         this.connections = connections;
@@ -57,8 +60,21 @@ public class GraphGenerator implements Generator {
             if (!container.nodeExists(b.getLabel())) {
                 container.addNode(b);
             }
+            for (String url : LinkGraph.getInstance().currentDataSet) {
+                String title = LinkGraph.getInstance().getTitle(url).replace(" - Wikipedia", "");
+                if (a.getLabel().equals(title) || b.getLabel().equals(title)) {
+                    if (mainCounts.containsKey(title)) {
+                        mainCounts.put(title, mainCounts.get(title) + 1);
+                    } else {
+                        mainCounts.put(title, 1);
+                    }
+                }
+            }
             container.addEdge(e);
+            totalCount++;
         }
+        System.out.println(mainCounts.toString());
+        System.out.println("Total Edges = " + totalCount);
     }
 
     public String getName() {
