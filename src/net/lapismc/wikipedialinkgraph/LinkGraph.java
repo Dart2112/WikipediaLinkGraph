@@ -18,13 +18,13 @@ import java.util.*;
 class LinkGraph {
 
     private static LinkGraph instance;
-    HashMap<String, String> titleCache = new HashMap<>();
-    List<String> currentDataSet = new ArrayList<>();
+    final HashMap<String, String> titleCache = new HashMap<>();
+    final List<String> currentDataSet = new ArrayList<>();
     //This HashMap will store the titles of links scraped and the number of times that title occurred
-    private List<String> urls = new ArrayList<>();
-    private HashMap<String, Article> cache = new HashMap<>();
-    private ArrayList<Connection> connections = new ArrayList<>();
-    private ArrayList<FailedArticle> failedArticles = new ArrayList<>();
+    private final List<String> urls = new ArrayList<>();
+    private final HashMap<String, Article> cache = new HashMap<>();
+    private final ArrayList<Connection> connections = new ArrayList<>();
+    private final ArrayList<FailedArticle> failedArticles = new ArrayList<>();
 
     LinkGraph() {
         instance = this;
@@ -82,7 +82,7 @@ class LinkGraph {
      *
      * @return returns a static instance of the {@link LinkGraph} class
      */
-    public static LinkGraph getInstance() {
+    static LinkGraph getInstance() {
         return instance;
     }
 

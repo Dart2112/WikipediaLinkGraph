@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @ServiceProvider(service = Generator.class)
-public class GraphGenerator implements Generator {
+class GraphGenerator implements Generator {
 
     @SuppressWarnings("WeakerAccess")
     protected ProgressTicket progress;
     @SuppressWarnings("WeakerAccess")
     protected boolean cancel = false;
     private ArrayList<Connection> connections;
-    private HashMap<String, Integer> mainCounts = new HashMap<>();
+    private final HashMap<String, Integer> mainCounts = new HashMap<>();
     private Integer totalCount = 0;
 
     void setConnections(ArrayList<Connection> connections) {

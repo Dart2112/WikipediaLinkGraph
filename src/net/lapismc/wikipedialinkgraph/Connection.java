@@ -2,8 +2,8 @@ package net.lapismc.wikipedialinkgraph;
 
 class Connection {
 
-    private String a;
-    private String b;
+    private final String a;
+    private final String b;
     private Integer weight;
 
     Connection(String a, String b) {

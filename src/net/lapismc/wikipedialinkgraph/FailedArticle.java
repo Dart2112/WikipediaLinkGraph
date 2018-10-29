@@ -6,7 +6,7 @@ import org.jsoup.select.Elements;
 
 class FailedArticle {
 
-    private String url;
+    private final String url;
     private String title;
 
     /**
