@@ -70,11 +70,11 @@ class LinkGraph {
         urls.add("https://en.wikipedia.org/wiki/Khemarat_District");
 
         collectData(0, 5, "Currency");
-        collectData(5, 5, "TVShows");
-        collectData(10, 5, "Singers");
-        collectData(15, 5, "Boxers");
-        collectData(20, 5, "Random");
-        collectData(25, 2, "Test");
+        //collectData(5, 5, "TVShows");
+        //collectData(10, 5, "Singers");
+        //collectData(15, 5, "Boxers");
+        //collectData(20, 5, "Random");
+        //collectData(25, 2, "Test");
     }
 
     /**
@@ -243,7 +243,8 @@ class LinkGraph {
                 && !title.startsWith("User talk:") && !title.startsWith("Help:") && !title.startsWith("User contributions")
                 && !title.startsWith("Pages that link to") && !title.contains("Recent changes")
                 && !title.contains("Related changes") && !title.contains("Special pages")
-                && !title.contains("Book sources") && !title.contains("Digital object identifier") && !title.contains("CITES");
+                && !title.contains("Book sources") && !title.contains("Digital object identifier") && !title.contains("CITES")
+                && !title.equalsIgnoreCase("Search - Wikipedia") && !title.contains("View source for");
     }
 
     /**

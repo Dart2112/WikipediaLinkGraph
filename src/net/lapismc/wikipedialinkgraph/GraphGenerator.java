@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @ServiceProvider(service = Generator.class)
-class GraphGenerator implements Generator {
+public class GraphGenerator implements Generator {
 
     @SuppressWarnings("WeakerAccess")
     protected ProgressTicket progress;
@@ -73,7 +73,7 @@ class GraphGenerator implements Generator {
             container.addEdge(e);
             totalCount++;
         }
-        System.out.println(mainCounts.toString());
+        System.out.println(mainCounts);
         System.out.println("Total Edges = " + totalCount);
     }
 
