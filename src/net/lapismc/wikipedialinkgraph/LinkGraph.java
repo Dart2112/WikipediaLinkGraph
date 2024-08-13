@@ -66,15 +66,25 @@ class LinkGraph {
         urls.add("https://en.wikipedia.org/wiki/Google");
 
         //Test
-        urls.add("https://en.wikipedia.org/wiki/WavePad_Audio_Editor");
-        urls.add("https://en.wikipedia.org/wiki/Khemarat_District");
+        urls.add("https://en.wikipedia.org/wiki/Adelaide_Oval");
+        urls.add("https://en.wikipedia.org/wiki/DEF_CON");
 
-        collectData(0, 5, "Currency");
+        //Cola
+        urls.add("https://en.wikipedia.org/wiki/Pepsi");
+        urls.add("https://en.wikipedia.org/wiki/Coca-Cola");
+
+        //2024 Election
+        urls.add("https://en.wikipedia.org/wiki/Donald_Trump");
+        urls.add("https://en.wikipedia.org/wiki/Kamala_Harris");
+
+        //collectData(0, 5, "Currency");
         //collectData(5, 5, "TVShows");
         //collectData(10, 5, "Singers");
         //collectData(15, 5, "Boxers");
         //collectData(20, 5, "Random");
         //collectData(25, 2, "Test");
+        collectData(27, 2, "Cola");
+        //collectData(29, 2, "2024Election");
     }
 
     /**
@@ -116,6 +126,7 @@ class LinkGraph {
         //clear the list to stop duplication
         connections.clear();
         currentDataSet.clear();
+        cleanCache();
     }
 
     /**
@@ -132,21 +143,26 @@ class LinkGraph {
      * Adds connections from non main nodes
      */
     private void addInterconnections() {
-        ArrayList<Connection> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         for (Connection c : connections) {
-            list.add(c.clone());
+            //Only add unique values
+            if (!list.contains(c.getTitleB()))
+                list.add(c.getTitleB());
         }
-        Iterator<Connection> it = list.iterator();
+        //Interconnections total and progress
+        int intTotal = list.size();
+        int intProgress = 0;
+        Iterator<String> it = list.iterator();
         while (it.hasNext()) {
-            Connection c = it.next();
+            intProgress++;
             //because title A is always one of the main articles
-            String title = c.getTitleB();
+            String title = it.next();
             it.remove();
             String url = getUrl(title);
-            if (url.equals("")) {
+            if (url.equals("") || urls.contains(url)) {
                 continue;
             }
-            System.out.println("Getting interconnections for " + title + "\n");
+            System.out.println("\n" + "(" + intProgress + "/" + intTotal + ") Getting interconnections for " + title);
             //Use Jsoup to load the URLs document
             Document doc = getDocument(url);
             if (doc == null) {
@@ -156,7 +172,10 @@ class LinkGraph {
             //Find all the links in the page
             Elements links = doc.select("a[href]");
             //Loop through all these links
+            int progress = 0;
+            int total = links.size();
             for (Element link : links) {
+                progress++;
                 //get the url of the link
                 String linkURL = link.attr("abs:href");
                 //if its to a site we have indexed
@@ -164,10 +183,9 @@ class LinkGraph {
                     //get the page titles and add a connection/increase the weight
                     String a = getTitle(url).replace(" - Wikipedia", "");
                     String b = getTitle(linkURL).replace(" - Wikipedia", "");
-                    processConnection(a, b);
+                    processConnection(a, b, progress, total);
                 }
             }
-            cleanCache();
         }
     }
 
@@ -204,7 +222,10 @@ class LinkGraph {
         //Find all the links in the page
         Elements links = doc.select("a[href]");
         //Loop through all these links
+        int progress = 0;
+        int total = links.size();
         for (Element link : links) {
+            progress++;
             //get the url of the link
             String linkURL = link.attr("abs:href");
             //ignore pages that aren't on wikipedia, this is to limit the number of sites we have to load to get the title
@@ -216,7 +237,7 @@ class LinkGraph {
                 failedArticles.add(new FailedArticle(url, targetTitle));
                 continue;
             }
-            //ensure its a wikipedia article by ignoring the link if it doesn't
+            //ensure it's a wikipedia article by ignoring the link if it doesn't
             //end with " - Wikipedia" or is in fact a category or file
             if (!isValidTitle(title)) {
                 continue;
@@ -225,8 +246,8 @@ class LinkGraph {
             title = title.replace(" - Wikipedia", "");
             titleCache.put(linkURL, title);
             //If the link is already in the list just add to the integer, otherwise add it to the list with a value of 1
-            processConnection(targetTitle, title);
-            cleanCache();
+            processConnection(targetTitle, title, progress, total);
+            currentDataSet.add(linkURL);
         }
     }
 
@@ -237,6 +258,7 @@ class LinkGraph {
      * @return Returns true if the title is valid
      */
     private boolean isValidTitle(String title) {
+        //Ignore pages which aren't articles
         return title.endsWith(" - Wikipedia") && !title.startsWith("Category:") && !title.startsWith("File:")
                 && !title.startsWith("Template:") && !title.startsWith("Template talk:")
                 && !title.startsWith("Wikipedia:") && !title.startsWith("Portal:") && !title.startsWith("Talk:")
@@ -244,7 +266,12 @@ class LinkGraph {
                 && !title.startsWith("Pages that link to") && !title.contains("Recent changes")
                 && !title.contains("Related changes") && !title.contains("Special pages")
                 && !title.contains("Book sources") && !title.contains("Digital object identifier") && !title.contains("CITES")
-                && !title.equalsIgnoreCase("Search - Wikipedia") && !title.contains("View source for");
+                && !title.equalsIgnoreCase("Search - Wikipedia") && !title.startsWith("View source for")
+                && !title.startsWith("Editing Template:")
+                //Ignore ISBN and Wayback machine as they are often linked in the references of an article
+                && !title.startsWith("ISBN") && !title.startsWith("ISSN") && !title.startsWith("Wayback Machine")
+                //Disable list of articles as they aren't actually useful for graphing, they just clog everything up
+                && !title.startsWith("List of");
     }
 
     /**
@@ -268,11 +295,13 @@ class LinkGraph {
     /**
      * Processes a connection between 2 nodes
      *
-     * @param a a node
-     * @param b another node
+     * @param a        a node
+     * @param b        another node
+     * @param progress how far through the links are we
+     * @param total    how many links are there in total
      */
-    void processConnection(String a, String b) {
-        System.out.println(a + " > " + b);
+    void processConnection(String a, String b, int progress, int total) {
+        System.out.println("(" + progress + "/" + total + ") " + a + " > " + b);
         if (isConnectionStored(a, b)) {
             Objects.requireNonNull(getConnection(a, b)).increaseWeight();
         } else {
@@ -300,6 +329,7 @@ class LinkGraph {
 
     /**
      * Gets the title of a url from JSoup or Cache
+     *
      * @param url The URL to fetch
      * @return Title of the URL requested
      */

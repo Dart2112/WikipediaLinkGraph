@@ -39,7 +39,10 @@ class FailedArticle {
             //Find all the links in the page
             Elements links = doc.select("a[href]");
             //Loop through all these links
+            int progress = 0;
+            int total = links.size();
             for (Element link : links) {
+                progress++;
                 //get the url of the link
                 String linkURL = link.attr("abs:href");
                 //if its to a site we have indexed
@@ -47,17 +50,17 @@ class FailedArticle {
                     //get the page titles and add a connection/increase the weight
                     String a = graph.getTitle(url).replace(" - Wikipedia", "");
                     String b = graph.titleCache.get(linkURL);
-                    graph.processConnection(a, b);
+                    graph.processConnection(a, b, progress, total);
                 }
             }
         } else {
-            //its a normal connection
+            //it's a normal connection
             String a = graph.getTitle(url);
             if (a.equalsIgnoreCase("Error")) {
                 return false;
             }
             String b = title;
-            graph.processConnection(a, b);
+            graph.processConnection(a, b, 0, 0);
         }
         return true;
     }
